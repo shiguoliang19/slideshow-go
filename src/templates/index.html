@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ .title }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <style>
+        .card {
+            transition: all .3s; 
+        }
+        .card:hover {
+            transform: translate(0px, 0px) scale(1.1) rotate(0deg);
+            z-index: 1;
+        }
+    </style>
+
+    <script>
+        // 导航栏数据加截
+        var folderUrl = "api/folder"
+        $.getJSON(folderUrl, function (result) {
+
+            $(".navbar-nav").children(["li"]).remove()
+
+            $.each(result, function (i, field) {
+                var item = ' \
+                        <li class="nav-item"> \
+                            <a class="nav-link" href="#"”>' + field + '</a> \
+                        </li> \
+                    '
+                $(".navbar-nav").append(item)
+            })
+        })
+
+        // 图片加载
+        $(document).on('click', '.nav-link', function () {
+            var text = $(this).text()
+            var url = "api/images" + "?name=" + text
+
+            $(".row").children(["col-sm-4"]).remove()
+
+            $.getJSON(url, function (result) {
+
+                $.each(result, function (i, field) {
+
+                    var item = ' \
+                    <div class="col-sm-4"> \
+                        <div class="card"> \
+                            <img class="card-img-top" src="' + field + '" alt="Card image" style="width: 100%;" /> \
+                        </div> \
+                    </div> \
+                    '
+                    $(".row").append(item)
+                })
+            })
+
+            var a = document.querySelector(".navbar-toggler");
+            $(".navbar-nav li a").on("click",function () {
+                a.click();
+            });
+        })
+    </script>
+</head>
+
+<body>
+    
+    <div class="container">
+        <br>
+        <br>
+        <br>
+
+        <!-- 图片显示 -->
+        <div class="row v-align align-items-center">
+            <div class="col-sm-4">
+                <div class="card">
+                    <img class="card-img-top" src="assets/sample.jpeg" alt="Card image" style="width: 100%" />
+                </div>
+            </div>
+        </div>
+
+        <!-- 导航栏 -->
+        <nav class="navbar navbar-expand-md bg-primary navbar-dark fixed-top">
+            <a class="navbar-brand" href="#">Slideshow</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">samples</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>  
+
+</body>
+
+</html>

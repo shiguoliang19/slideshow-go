@@ -1,57 +1,134 @@
-
 package main
 
 import (
-	"net/http"
-	"os"
-	"io/ioutil"
-	"log"
 	"fmt"
-	"path/filepath"
+	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
-type Slideshow struct {
-	Name     string    `form:"name"`
+type Product struct {
+	gorm.Model
+
+	Name string
+
+	Views uint32
+
+	Amount uint32
+
+	Folder string
+
+	ImageNameList string
 }
 
-func getFolder(path string) []string {
-	pwd, _ := os.Getwd()
+type ProductWrapper struct {
+	Id uint
 
-	fileInfoList,err := ioutil.ReadDir(filepath.Join(pwd, path))
-	if err != nil {
-		log.Fatal(err)
-	}
+	Name string
 
-	var folder []string
+	Views uint32
 
-	for i := range fileInfoList {
-		folder = append(folder, fileInfoList[i].Name())
-	}
+	Amount uint32
 
-	return folder
+	FirstImagePath string
 }
 
-func getImages(path string) []string {
-	pwd, _ := os.Getwd()
+type ProductDetails struct {
+	Name string
 
-	fileInfoList,err := ioutil.ReadDir(filepath.Join(pwd, path))
+	Views uint32
+
+	Amount uint32
+
+	ImagePathList []string
+}
+
+type SlideshowUri struct {
+	Id uint64 `uri:"id" binding:"required,uuid"`
+}
+
+func mock() {
+	db, err := gorm.Open(sqlite.Open("slideshow.db"), &gorm.Config{})
 	if err != nil {
-		log.Fatal(err)
+		panic("failed to connect database")
 	}
 
-	var images []string
+	db.AutoMigrate(&Product{})
 
-	for i := range fileInfoList {
-		uri := path + "/" + fileInfoList[i].Name()
-		images = append(images, uri)
+	db.Create(&Product{
+		Name:          "动漫图片",
+		Views:         100,
+		Amount:        3,
+		Folder:        "/assets",
+		ImageNameList: "01.jpeg,02.jpeg,03.jpeg",
+	})
+}
+
+func listImages() []ProductWrapper {
+	db, err := gorm.Open(sqlite.Open("slideshow.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+		return []ProductWrapper{}
 	}
 
-	return images
+	db.AutoMigrate(&Product{})
+
+	var products []Product
+	result := db.Find(&products)
+	fmt.Println("RowsAffected: ", result.RowsAffected, " Error: ", result.Error)
+
+	var productWrapperList []ProductWrapper
+	for _, product := range products {
+		imageNameList := strings.Split(product.ImageNameList, ",")
+		if len(imageNameList) != 0 {
+			var productWrapper ProductWrapper
+			productWrapper.Id = product.ID
+			productWrapper.Name = product.Name
+			productWrapper.Views = product.Views
+			productWrapper.Amount = product.Amount
+			productWrapper.FirstImagePath = product.Folder + "/" + imageNameList[0]
+			productWrapperList = append(productWrapperList, productWrapper)
+		}
+	}
+	return productWrapperList
+}
+
+func getImage(id uint64) ProductDetails {
+	db, err := gorm.Open(sqlite.Open("slideshow.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+		return ProductDetails{}
+	}
+
+	db.AutoMigrate(&Product{})
+
+	var product Product
+	db.First(&product, id)
+
+	imageNameList := strings.Split(product.ImageNameList, ",")
+	var imagePathList []string
+	for _, imageName := range imageNameList {
+		imagePath := product.Folder + "/" + imageName
+		imagePathList = append(imagePathList, imagePath)
+	}
+
+	var productDetails ProductDetails
+	productDetails.Name = product.Name
+	productDetails.Views = product.Views
+	productDetails.Amount = product.Amount
+	productDetails.ImagePathList = imagePathList
+
+	return productDetails
 }
 
 func main() {
+
+	// mock()
+
 	r := gin.Default()
 	r.Static("/assets", "assets")
 	r.LoadHTMLGlob("templates/*")
@@ -62,23 +139,39 @@ func main() {
 		})
 	})
 
-	r.GET("/api/folder", func(c *gin.Context) {
-		data := getFolder("/assets/images")
-		c.AsciiJSON(http.StatusOK, data)
+	r.GET("/thread/:id", func(c *gin.Context) {
+		var slideshowUri SlideshowUri
+		if c.ShouldBindUri(&slideshowUri) != nil {
+			fmt.Println(slideshowUri.Id)
+
+			productDetails := getImage(slideshowUri.Id)
+
+			c.HTML(http.StatusOK, "thread.html", gin.H{
+				"title":  "Slidsshow",
+				"name":   productDetails.Name,
+				"views":  productDetails.Views,
+				"amount": productDetails.Amount,
+			})
+		}
+	})
+
+	r.GET("/api/thread/:id", func(c *gin.Context) {
+		var slideshowUri SlideshowUri
+		if c.ShouldBindUri(&slideshowUri) != nil {
+			fmt.Println(slideshowUri.Id)
+
+			productDetails := getImage(slideshowUri.Id)
+
+			if len(productDetails.ImagePathList) != 0 {
+				c.AsciiJSON(http.StatusOK, productDetails.ImagePathList)
+			}
+		}
 	})
 
 	r.GET("/api/images", func(c *gin.Context) {
-		var slideshow Slideshow
-		if c.ShouldBind(&slideshow) == nil {
-			fmt.Println(slideshow.Name)
-
-			path := fmt.Sprintf("/assets/images/%s", slideshow.Name)
-			data := getImages(path)
+		data := listImages()
+		if len(data) != 0 {
 			c.AsciiJSON(http.StatusOK, data)
-		} else {
-			c.AsciiJSON(http.StatusBadRequest, gin.H{
-				"error": "file does not exist!",
-			})
 		}
 	})
 

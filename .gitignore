@@ -1,2 +1,4 @@
 src/server.crt
 src/server.key
+src/assets/images/*
+src/slideshow.db

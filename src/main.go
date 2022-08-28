@@ -127,7 +127,7 @@ func getImage(id uint64) ProductDetails {
 
 func main() {
 
-	// mock()
+	mock()
 
 	r := gin.Default()
 	r.Static("/assets", "assets")

@@ -21,13 +21,13 @@
         }
 
         .card {
-            box-shadow: 0 6px 10px 0 rgba(95,101,105,.15);
+            box-shadow: 0 6px 10px 0 rgba(95, 101, 105, .15);
         }
     </style>
 
     <script>
         // 内容加载
-        $(document).ready(function(){
+        $(document).ready(function () {
             $(".row").children(["col-sm-4"]).remove()
 
             var url = "/api/images"
@@ -36,21 +36,21 @@
                 console.log(result)
 
                 $.each(result, function (i, field) {
-                    var item = ' \
+                    var thread = ' \
                         <div class="col-sm-4 p-2"> \
                             <div class="card bg-light text-dark"> \
-                                <img class="card-img-top" src="' + field["FirstImagePath"] + '" alt="" /> \
-                                <div class="card-body"> \
-                                    <a href="/thread/' + field["Id"] + '" class="card-link"> \
-                                        <h5 class="card-title">' + field["Name"] + '</h5> \
-                                    </a> \
-                                    <span class="card-text"><i class="fa fa-eye"></i> ' + field["Views"] + '</span> \
-                                    <span class="card-text"><i class="bi bi-bookmark"></i> ' + field["Amount"] + 'P</span> \
-                                </div> \
+                                <a href="/thread/' + field["Id"] + '" class="card-link"> \
+                                    <img class="card-img-top" src="' + field["FirstImagePath"] + '" alt="" /> \
+                                    <div class="card-body"> \
+                                        <h5 class="card-title text-primary">' + field["Name"] + '</h5> \
+                                        <span class="card-text text-secondary"><i class="fa fa-eye"></i> ' + field["Views"] + '</span> \
+                                        <span class="card-text text-secondary"><i class="bi bi-bookmark"></i> ' + field["Amount"] + 'P</span> \
+                                    </div> \
+                                </a> \
                             </div> \
                         </div> \
                     '
-                    $(".row").append(item)
+                    $(".row").append(thread)
                 })
             })
         })
@@ -69,43 +69,43 @@
         <div class="row">
             <div class="col-sm-4 p-2">
                 <div class="card bg-light text-dark">
-                    <img class="card-img-top" src="assets/01.jpeg" alt="" />
-                    <div class="card-body">
-                        <a href="/item" class="card-link">
-                            <h5 class="card-title">杜鹃的婚约</h5>
-                        </a>
-                        <span class="card-text"><i class="fa fa-eye"></i> 1243</span>
-                        <span class="card-text"><i class="bi bi-bookmark"></i> 23P</span>
-                    </div>
+                    <a href="/thread/1" class="card-link">
+                        <img class="card-img-top" src="assets/samples/01.jpeg" alt="" />
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">杜鹃的婚约</h5>
+                            <span class="card-text text-secondary"><i class="fa fa-eye"></i> 1243</span>
+                            <span class="card-text text-secondary"><i class="bi bi-bookmark"></i> 23P</span>
+                        </div>
+                    </a>
                 </div>
             </div>
 
             <div class="col-sm-4 p-2">
                 <div class="card bg-light text-dark">
-                    <img class="card-img-top" src="assets/02.jpeg" alt="" />
-                    <div class="card-body">
-                        <a href="/item" class="card-link">
-                            <h5 class="card-title">Slow Loop</h5>
-                        </a>
-                        <span class="card-text"><i class="fa fa-eye"></i> 56</span>
-                        <span class="card-text"><i class="bi bi-bookmark"></i> 6P</span>
-                    </div>
+                    <a href="/thread/2" class="card-link">
+                        <img class="card-img-top" src="assets/samples/02.jpeg" alt="" />
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Slow Loop</h5>
+                            <span class="card-text text-secondary"><i class="fa fa-eye"></i> 56</span>
+                            <span class="card-text text-secondary"><i class="bi bi-bookmark"></i> 6P</span>
+                        </div>
+                    </a>
                 </div>
             </div>
 
             <div class="col-sm-4 p-2">
                 <div class="card bg-light text-dark">
-                    <img class="card-img-top" src="assets/03.jpeg" alt="" />
-                    <div class="card-body">
-                        <a href="/item" class="card-link">
-                            <h5 class="card-title">约会大作战 第四季</h5>
-                        </a>
-                        <span class="card-text"><i class="fa fa-eye"></i> 1311</span>
-                        <span class="card-text"><i class="bi bi-bookmark"></i> 12P</span>
-                    </div>
+                    <a href="/thread/3" class="card-link">
+                        <img class="card-img-top" src="assets/samples/03.jpeg" alt="" />
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">约会大作战 第四季</h5>
+                            <span class="card-text text-secondary"><i class="fa fa-eye"></i> 1311</span>
+                            <span class="card-text text-secondary"><i class="bi bi-bookmark"></i> 12P</span>
+                        </div>
+                    </a>
                 </div>
             </div>
-    </div>
+        </div>
 </body>
 
 </html>

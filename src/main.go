@@ -63,7 +63,7 @@ func mock() {
 		Name:          "动漫图片",
 		Views:         100,
 		Amount:        3,
-		Folder:        "/assets",
+		Folder:        "/assets/samples",
 		ImageNameList: "01.jpeg,02.jpeg,03.jpeg",
 	})
 }

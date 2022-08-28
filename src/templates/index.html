@@ -15,7 +15,6 @@
 
     <style>
         h5 {
-            width: 100%;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -31,7 +30,7 @@
         $(document).ready(function(){
             $(".row").children(["col-sm-4"]).remove()
 
-            var url = "api/images"
+            var url = "/api/images"
 
             $.getJSON(url, function (result) {
                 console.log(result)
@@ -63,7 +62,7 @@
 
         <!-- 导航栏 -->
         <nav class="navbar navbar-expand-md bg-primary navbar-dark fixed-top">
-            <a class="navbar-brand" href="#">Slideshow</a>
+            <a class="navbar-brand" href="/">Slideshow</a>
         </nav>
 
         <!-- 内容 -->

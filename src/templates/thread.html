@@ -45,19 +45,21 @@
             pathname = window.location.pathname
             id = pathname.substring(pathname.lastIndexOf('/') + 1, pathname.length)
 
-            var url = '/api/thread/' + id
-            $.getJSON(url, function (result) {
-                $.each(result, function (i, field) {
+            fetch('/api/thread/' + id)
+            .then(response => response.json())
+            .then(data => {
+                for(var k in data) {
+                    name = data[k]
                     var item = ' \
                         <div class="col-sm-4 p-2"> \
                             <div class="card"> \
-                                <img class="card-img-top lazy" src="' + field + '" alt="lazy image" /> \
+                                <img class="card-img-top lazy" src="' + name + '" alt="lazy image" /> \
                             </div> \
                         </div> \
                     '
                     $(".row").append(item)
                     lazyLoadInstance.update()
-                })
+                }
             })
         });
     </script>

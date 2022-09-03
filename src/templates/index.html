@@ -38,21 +38,26 @@
         $(document).ready(function () {
             $(".row").children(["col-sm-4"]).remove()
 
-            var url = "/api/images"
+            fetch("/api/images")
+            .then(response => response.json())
+            .then(data => {
+                for(var k in data)
+                {
+                    id = data[k]["Id"]
+                    firstImagePath = data[k]["FirstImagePath"]
+                    name = data[k]["Name"]
+                    views = data[k]["Views"]
+                    amount = data[k]["Amount"]
 
-            $.getJSON(url, function (result) {
-                console.log(result)
-
-                $.each(result, function (i, field) {
                     var thread = ' \
                         <div class="col-sm-4 p-2"> \
                             <div class="card bg-light text-dark"> \
-                                <a href="/thread/' + field["Id"] + '" class="card-link"> \
-                                    <img class="card-img-top lazy" data-src="' + field["FirstImagePath"] + '" alt="lazy image" /> \
+                                <a href="/thread/' + id + '" class="card-link"> \
+                                    <img class="card-img-top lazy" data-src="' + firstImagePath + '" alt="lazy image" /> \
                                     <div class="card-body"> \
-                                        <h5 class="card-title text-primary">' + field["Name"] + '</h5> \
-                                        <span class="card-text text-secondary"><i class="fa fa-eye"></i> ' + field["Views"] + '</span> \
-                                        <span class="card-text text-secondary"><i class="bi bi-bookmark"></i> ' + field["Amount"] + 'P</span> \
+                                        <h5 class="card-title text-primary">' + name + '</h5> \
+                                        <span class="card-text text-secondary"><i class="fa fa-eye"></i> ' + views + '</span> \
+                                        <span class="card-text text-secondary"><i class="bi bi-bookmark"></i> ' + amount + 'P</span> \
                                     </div> \
                                 </a> \
                             </div> \
@@ -60,8 +65,8 @@
                     '
                     $(".row").append(thread)
                     lazyLoadInstance.update();
-                })
-            })           
+                }
+            })        
         })
     </script>
 </head>

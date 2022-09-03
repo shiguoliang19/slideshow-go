@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js">
+
     <style>
         .navbar-brand {
             overflow: hidden;
@@ -32,6 +34,10 @@
     </style>
 
     <script>
+        var lazyLoadInstance = new LazyLoad({
+            elements_selector: ".lazy",
+        });
+
         // 内容加载
         $(document).ready(function () {
             $(".row").children(["col-sm-4"]).remove()
@@ -45,11 +51,12 @@
                     var item = ' \
                         <div class="col-sm-4 p-2"> \
                             <div class="card"> \
-                                <img class="card-img-top" src="' + field + '" alt="" /> \
+                                <img class="card-img-top lazy" src="' + field + '" alt="lazy image" /> \
                             </div> \
                         </div> \
                     '
                     $(".row").append(item)
+                    lazyLoadInstance.update()
                 })
             })
         });
@@ -75,19 +82,19 @@
         <div class="row">
             <div class="col-sm-4 p-2">
                 <div class="card">
-                    <img class="card-img-top" src="/assets/01.jpeg" alt="" />
+                    <img class="card-img-top lazy" src="/assets/01.jpeg" alt="lazy image" />
                 </div>
             </div>
 
             <div class="col-sm-4 p-2">
                 <div class="card">
-                    <img class="card-img-top" src="/assets/02.jpeg" alt="" />
+                    <img class="card-img-top lazy" src="/assets/02.jpeg" alt="lazy image" />
                 </div>
             </div>
 
             <div class="col-sm-4 p-2">
                 <div class="card">
-                    <img class="card-img-top" src="/assets/03.jpeg" alt="" />
+                    <img class="card-img-top lazy" src="/assets/03.jpeg" alt="lazy image" />
                 </div>
             </div>
         </div>

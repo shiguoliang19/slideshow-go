@@ -10,5 +10,3 @@ RUN go env -w GO111MODULE=on &&\
 EXPOSE 8080
 
 CMD ["go", "run", "main.go"]
-
-

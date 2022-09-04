@@ -183,14 +183,14 @@
                         height = data[k]["height"]
 
                         var item = ' \
-                    <div class="col-sm-4 p-2"> \
-                        <div class="card"> \
-                            <a href="' + imagePath + '" data-pswp-width="' + width + '" data-pswp-height="' + height + '" target="_blank"> \
-                                <img class="card-img-top lazy" src="' + imagePath + '" alt="lazy image" /> \
-                            </a> \
+                        <div class="col-sm-4 p-2"> \
+                            <div class="card"> \
+                                <a href="' + imagePath + '" data-pswp-width="' + width + '" data-pswp-height="' + height + '" target="_blank"> \
+                                    <img class="card-img-top lazy" src="' + imagePath + '" alt="lazy image" /> \
+                                </a> \
+                            </div> \
                         </div> \
-                    </div> \
-                    '
+                        '
                         $(".row").append(item)
                         lazyLoadInstance.update()
                     }

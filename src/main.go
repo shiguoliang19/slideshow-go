@@ -2,11 +2,16 @@ package main
 
 import (
 	"fmt"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 	"net/http"
+	"os"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -44,7 +49,7 @@ type ProductDetails struct {
 
 	Amount uint32
 
-	ImagePathList []string
+	ImageInfoList []map[string]string
 }
 
 type SlideshowUri struct {
@@ -110,17 +115,29 @@ func getImage(id uint64) ProductDetails {
 	db.First(&product, id)
 
 	imageNameList := strings.Split(product.ImageNameList, ",")
-	var imagePathList []string
+
+	var imageInfoList []map[string]string
 	for _, imageName := range imageNameList {
 		imagePath := product.Folder + "/" + imageName
-		imagePathList = append(imagePathList, imagePath)
+		file, _ := os.Open("." + imagePath)
+		c, _, err := image.DecodeConfig(file)
+		if err != nil {
+			fmt.Println("get decode config fail!", err)
+			continue
+		}
+
+		imageInfo := make(map[string]string)
+		imageInfo["imagePath"] = imagePath
+		imageInfo["width"] = strconv.Itoa(c.Width)
+		imageInfo["height"] = strconv.Itoa(c.Height)
+		imageInfoList = append(imageInfoList, imageInfo)
 	}
 
 	var productDetails ProductDetails
 	productDetails.Name = product.Name
 	productDetails.Views = product.Views
 	productDetails.Amount = product.Amount
-	productDetails.ImagePathList = imagePathList
+	productDetails.ImageInfoList = imageInfoList
 
 	return productDetails
 }
@@ -162,8 +179,8 @@ func main() {
 
 			productDetails := getImage(slideshowUri.Id)
 
-			if len(productDetails.ImagePathList) != 0 {
-				c.AsciiJSON(http.StatusOK, productDetails.ImagePathList)
+			if len(productDetails.ImageInfoList) != 0 {
+				c.AsciiJSON(http.StatusOK, productDetails.ImageInfoList)
 			}
 		}
 	})

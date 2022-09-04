@@ -24,7 +24,7 @@
 
         .card {
             transition: all .3s;
-            box-shadow: 0 6px 10px 0 rgba(95,101,105,.15);
+            box-shadow: 0 6px 10px 0 rgba(95, 101, 105, .15);
         }
 
         .card:hover {
@@ -32,6 +32,25 @@
             z-index: 1;
         }
     </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@5.3.2/dist/photoswipe.css">
+
+    <script type="module">
+        import PhotoSwipeLightbox from 'https://cdn.jsdelivr.net/npm/photoswipe@5.3.2/dist/photoswipe-lightbox.esm.js';
+        import PhotoSwipe from 'https://cdn.jsdelivr.net/npm/photoswipe@5.3.2/dist/photoswipe.esm.js';
+
+        const lightbox = new PhotoSwipeLightbox({
+            // may select multiple "galleries"
+            gallery: '#gallery--getting-started',
+
+            // Elements within gallery (slides)
+            children: 'a',
+
+            // setup PhotoSwipe Core dynamic import
+            pswpModule: PhotoSwipe
+        });
+        lightbox.init();
+    </script>
 
     <script>
         var lazyLoadInstance = new LazyLoad({
@@ -48,14 +67,20 @@
             fetch('/api/thread/' + id)
             .then(response => response.json())
             .then(data => {
+                console.log(data)
                 for(var k in data) {
-                    name = data[k]
+                    imagePath = data[k]["imagePath"]
+                    width = data[k]["width"]
+                    height = data[k]["height"]
+
                     var item = ' \
-                        <div class="col-sm-4 p-2"> \
-                            <div class="card"> \
-                                <img class="card-img-top lazy" src="' + name + '" alt="lazy image" /> \
-                            </div> \
+                    <div class="col-sm-4 p-2"> \
+                        <div class="card"> \
+                            <a href="' + imagePath + '" data-pswp-width="' + width +'" data-pswp-height="' + height + '" target="_blank"> \
+                                <img class="card-img-top lazy" src="' + imagePath + '" alt="lazy image" /> \
+                            </a> \
                         </div> \
+                    </div> \
                     '
                     $(".row").append(item)
                     lazyLoadInstance.update()
@@ -72,31 +97,37 @@
             <a class="navbar-brand" href="/">{{ .name }}</a>
             <form class="ml-auto">
                 <span class="text-white">
-                    <i class="fa fa-eye"></i>{{ .amount }}
+                    <i class="fa fa-eye"></i>{{ .views }}
                 </span>
                 <span class="text-white">
-                    <i class="bi bi-bookmark"></i>{{ .views }}
+                    <i class="bi bi-bookmark"></i>{{ .amount }}
                 </span>
             </form>
         </nav>
 
         <!-- 内容 -->
-        <div class="row">
+        <div class="row pswp-gallery pswp-gallery--single-column" id="gallery--getting-started">
             <div class="col-sm-4 p-2">
                 <div class="card">
-                    <img class="card-img-top lazy" src="/assets/01.jpeg" alt="lazy image" />
+                    <a href="/assets/samples/01.jpeg" data-pswp-width="665" data-pswp-height="400" target="_blank">
+                        <img class="card-img-top lazy" src="/assets/samples/01.jpeg" alt="lazy image" />
+                    </a>
                 </div>
             </div>
 
             <div class="col-sm-4 p-2">
                 <div class="card">
-                    <img class="card-img-top lazy" src="/assets/02.jpeg" alt="lazy image" />
+                    <a href="/assets/samples/02.jpeg" data-pswp-width="665" data-pswp-height="400" target="_blank">
+                        <img class="card-img-top lazy" src="/assets/samples/02.jpeg" alt="lazy image" />
+                    </a>
                 </div>
             </div>
 
             <div class="col-sm-4 p-2">
                 <div class="card">
-                    <img class="card-img-top lazy" src="/assets/03.jpeg" alt="lazy image" />
+                    <a href="/assets/samples/03.jpeg" data-pswp-width="665" data-pswp-height="400" target="_blank">
+                        <img class="card-img-top lazy" src="/assets/samples/03.jpeg" alt="lazy image" />
+                    </a>
                 </div>
             </div>
         </div>
